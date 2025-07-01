@@ -1,170 +1,133 @@
-# 📦 TeleDrive Backend
+🎟️ EventHub – Online Event Booking Platform
+A modern, scalable event booking platform for discovering and reserving tickets to the latest concerts, shows, and international performances. Built for global audiences with secure online payments via Razorpay.
 
-A **Node.js backend server** that leverages **Telegram's API** for cloud storage functionality, allowing users to store and manage files using Telegram as the storage backend.
+📜 Overview
+EventHub is a Node.js-powered backend for managing upcoming and ongoing event listings with integrated ticket booking. The platform supports international access and ensures a seamless user experience for event discovery, seat selection, and payment processing using Razorpay.
 
----
+🚀 Features
+🎫 Event Listings: Browse latest and trending events, including top artists like Arijit Singh and rising global stars.
 
-## 📜 Overview
+🌍 International Support: Users from across the globe can view and book events.
 
-This backend service acts as an intermediary between the TeleDrive frontend application and Telegram's API. It handles user authentication, file uploads, downloads, and management through a Telegram bot, effectively turning Telegram into a personal cloud storage solution.
+💳 Payment Integration: Integrated Razorpay for secure transactions.
 
----
+🧪 Test Mode Enabled: Safe testing with demo card & OTP.
 
-## 🚀 Features
+🔒 Secure Booking Flow: Every booking is verified and confirmed before ticket generation.
 
-* **Telegram Authentication:** Secure login using Telegram's authentication system
-* **File Management:** Upload, download, delete, and restore files
-* **Recycle Bin:** Soft delete functionality with restore capability
-* **Thumbnails:** Automatic thumbnail generation for image files
-* **Direct Download:** Download files directly from Telegram to device
-* **Category Support:** Special handling for various file types (images, documents, videos, audio)
+📱 Mobile-Responsive: Optimized for mobile and desktop platforms.
 
----
+🔧 Setup & Installation
+Prerequisites
+Node.js (v14+)
 
-## 🔧 Setup & Installation
+NPM or Yarn
 
-### Prerequisites
+Razorpay account (for live integration)
 
-* Node.js (v14+)
-* NPM or Yarn
-* Telegram Bot Token (from @BotFather)
+Installation Steps
+Clone the repository
 
-### Installation Steps
+bash
+Copy
+Edit
+git clone https://github.com/yourusername/eventhub
+cd eventhub/backend
+Install dependencies
 
-1. Clone the repository:
+bash
+Copy
+Edit
+npm install
+Configure environment
 
-   ```bash
-   git clone https://github.com/yourusername/telegram_drive
-   cd telegram_drive/backend
-   ```
+Create a .env file in the project root with the following:
 
-2. Install dependencies:
+env
+Copy
+Edit
+PORT=3000
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+Start the server
 
-   ```bash
-   npm install
-   ```
+bash
+Copy
+Edit
+npm start
+🌐 API Endpoints
+🧾 Events
+GET /api/events – Get all active and upcoming events
 
-3. Create a `.env` file in the project root with the following content:
+GET /api/events/:id – Get details of a specific event
 
-   ```
-   TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
-   PORT=3000
-   ```
+💳 Payments
+POST /api/checkout – Create a Razorpay order
 
-4. Start the server:
+POST /api/verify – Verify payment and confirm ticket
 
-   ```bash
-   npm start
-   ```
+🧪 Test Mode (Razorpay)
+Currently, Razorpay is in test mode. You can use the following dummy credentials to test payments:
 
----
+Card Number: 4111 1111 1111 1111
 
-### 🔒 Environment Variables
+Expiry: Any future date
 
-| Variable             | Description                                      | Required |
-| -------------------- | ------------------------------------------------ | -------- |
-| TELEGRAM\_BOT\_TOKEN | Your Telegram bot token from BotFather           | Yes      |
-| PORT                 | Port for the server to run on (defaults to 3000) | No       |
+CVV: 123
 
----
+OTP: 111111
 
-## 🌐 API Endpoints
+🚫 Note: UPI will not work in test mode. Switch to live mode for full functionality.
 
-### Authentication
+📂 Project Structure
+bash
+Copy
+Edit
+eventhub/
+├── backend/
+│   ├── server.js           # Entry point
+│   ├── routes/             # API routes
+│   ├── controllers/        # Business logic
+│   ├── models/             # Event and Booking models
+│   ├── utils/              # Razorpay integration utils
+│   ├── .env                # Environment variables
+│   └── ...
+├── frontend/               # (Optional if separate repo)
+🔐 Security Features
+Payment Verification: Razorpay signature check to prevent spoofing
 
-* **POST** `/api/verify` - Verify the 6-digit code received from Telegram bot
+Input Validation: Protects against injection and malformed data
 
-### File Management
+HTTPS Ready: Deployable behind a reverse proxy for SSL support
 
-* **POST** `/api/upload` - Upload a file to Telegram
-* **GET** `/api/files` - Get all files for a user
-* **GET** `/api/file/:fileId` - Download a file directly
-* **GET** `/api/download/:fileId` - Send a file to user's Telegram chat
-* **DELETE** `/api/file/:fileId` - Move a file to the Recycle Bin
+⚡ Performance Optimizations
+Caching event listings for fast delivery
 
-### Thumbnails
+Lazy loading images on the frontend
 
-* **GET** `/api/thumbnail/:fileId` - Get thumbnail for an image file
+Graceful fallback for failed payments
 
-### Recycle Bin
+🛠️ Troubleshooting
+❌ Payment Not Going Through
+Ensure your .env has correct Razorpay keys
 
-* **GET** `/api/bin` - List files in recycle bin
-* **POST** `/api/bin/restore/:fileId` - Restore a file from recycle bin
-* **DELETE** `/api/bin/:fileId` - Permanently delete a file
-* **DELETE** `/api/bin/empty` - Empty the recycle bin
+Confirm you're in test mode and using test credentials
 
----
+🧪 UPI Not Working?
+UPI is disabled in test mode. It will work once live keys are used.
 
-## 📂 Project Structure
+🚀 Deployment
+Recommended Setup
+Use PM2 to manage the backend server
 
-```
-backend/
-├── server.js          # Main server file
-├── uploads/           # Temporary storage for file uploads
-├── data/
-│   ├── userFiles.json # User file metadata storage
-├── thumbnails/        # Cache directory for generated thumbnails
-├── .env               # Environment variables
-```
+bash
+Copy
+Edit
+npm install -g pm2
+pm2 start server.js --name eventhub
+Set up Nginx or Apache for HTTPS and reverse proxy
 
----
+Monitor server logs regularly and secure your environment
 
-## 🔐 Security Features
-
-* **Verification Code:** 6-digit time-limited verification code for authentication
-* **File ID Validation:** Ensures users can only access their own files
-* **Temporary File Storage:** Files are stored temporarily during processing
-* **Error Handling:** Comprehensive error handling with appropriate status codes
-
----
-
-## ⚡ Performance Optimizations
-
-* **Thumbnail Caching:** Generated thumbnails are cached to reduce processing load
-* **Scheduled Cleanup:** Automatic cleanup of old cached thumbnails
-* **Periodic Data Saving:** Automatic saving of file metadata
-* **Graceful Shutdown:** Ensures data is saved before server shutdown
-
----
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-#### ❌ `ECONNRESET` Errors
-
-* Usually indicates network instability or Telegram API rate limiting.
-* The server includes automatic reconnection logic.
-
-#### 🔐 `ETELEGRAM: 401 Unauthorized` Error
-
-* Verify that your Telegram bot token in the `.env` file is correct and active.
-* Make sure the bot hasn't been banned or disabled.
-
-#### 📦 File Size Limitations
-
-* Default file size limit is 50MB.
-* To increase, adjust the `fileSize` limit in the `multer` middleware configuration.
-
----
-
-## 📦 Deployment
-
-### Production Recommendations
-
-1. Use a process manager like PM2:
-
-   ```bash
-   npm install -g pm2
-   pm2 start server.js --name telegram-drive
-   ```
-
-2. Set up a reverse proxy (Nginx/Apache) for SSL termination
-
-3. Configure appropriate firewall rules and monitor server logs
-
----
-
-## 📘 License
-
-MIT © \[ashishexee]
+📘 License
+MIT © Deepanshu Singh
